@@ -22,8 +22,8 @@ import org.openqa.selenium.Keys;
 import java.util.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-public class loggin {
+import org.openqa.selenium.support.ui.WebDriverWait;
+public class NewsTest {
     private WebDriver driver;
     private Map<String, Object> vars;
     JavascriptExecutor js;
@@ -37,16 +37,15 @@ public class loggin {
     public void tearDown() {
         driver.quit();
     }
+
     @Test
-    public void testloggin() {
-        driver.get("https://ok.ru/");
+    public void news() {
+
+        driver.get("https://ok.ru/profile/592527521743");
         driver.manage().window().setSize(new Dimension(922, 894));
-        driver.findElement(By.id("field_email")).sendKeys("technopol38");
-        driver.findElement(By.id("field_password")).click();
-        driver.findElement(By.id("field_password")).sendKeys("technopolisPassword");
-        driver.findElement(By.cssSelector(".\\__wide:nth-child(1)")).click();
+        driver.findElement(By.cssSelector(".nav-side_i-w:nth-child(2) .tico")).click();
         {
-            WebElement element = driver.findElement(By.cssSelector(".card-wrapper__ylpz6:nth-child(3) .content__aj603"));
+            WebElement element = driver.findElement(By.cssSelector(".stub-img__288"));
             Actions builder = new Actions(driver);
             builder.moveToElement(element).perform();
         }
@@ -56,12 +55,5 @@ public class loggin {
             Actions builder = new Actions(driver);
             builder.moveToElement(element, 0, 0).perform();
         }
-        {
-            WebElement element = driver.findElement(By.cssSelector(".lcTc_avatar"));
-            Actions builder = new Actions(driver);
-            builder.moveToElement(element).perform();
-        }
-        driver.findElement(By.cssSelector(".feed-w:nth-child(4) > .feed")).click();
-        driver.close();
     }
 }
