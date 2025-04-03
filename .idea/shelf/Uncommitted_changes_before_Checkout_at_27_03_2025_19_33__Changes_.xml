@@ -1,0 +1,16 @@
+<changelist name="Uncommitted_changes_before_Checkout_at_27_03_2025_19_33_[Changes]" date="1743093184363" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_27_03_2025_19_33_[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 27.03.2025 19:33 [Changes]" />
+  <binary>
+    <option name="AFTER_PATH" value="target/test-classes/tests/LoginPage.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_27_03_2025_19_33_[Changes]/LoginPage.class" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="target/classes/Main.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_27_03_2025_19_33_[Changes]/Main.class" />
+  </binary>
+  <binary>
+    <option name="AFTER_PATH" value="target/test-classes/tests/LoginTests.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_27_03_2025_19_33_[Changes]/LoginTests.class" />
+  </binary>
+</changelist>
