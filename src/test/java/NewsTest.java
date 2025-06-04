@@ -1,38 +1,29 @@
 import org.junit.jupiter.api.*;
-import org.openqa.selenium.*;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.By;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import pages.HomePage;
 
 import java.time.Duration;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTimeoutPreemptively;
 
 @TestMethodOrder(MethodOrderer.DisplayName.class)
-public class NewsTest {
+public class NewsTest extends BaseTest {
 
-    private WebDriver driver;
-    private Actions actions;
-    private WebDriverWait wait;
-
-
-    private final By newsTab = By.cssSelector(".nav-side_i-w:nth-child(2) .tico");
-    private final By stubImage = By.cssSelector(".stub-img__288");
+    private HomePage homePage;
 
     @BeforeEach
     public void setUp() {
-        driver = new FirefoxDriver();
-        actions = new Actions(driver);
-        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-        driver.manage().window().setSize(new Dimension(922, 894));
+        super.setUp();
+        homePage = new HomePage(driver);
     }
 
     @AfterEach
     public void tearDown() {
-        if (driver != null) {
-            driver.quit();
-        }
+        super.tearDown();
     }
 
     @Test
@@ -44,38 +35,28 @@ public class NewsTest {
             driver.get("https://ok.ru/profile/592527521743");
 
 
-            clickWithWait(newsTab);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(".user-profile")));
 
 
-            hoverOn(stubImage);
+            homePage.openNewsTab();
 
 
-            ((JavascriptExecutor) driver).executeScript("window.scrollTo(0,0)");
+            homePage.hoverOnStubImage();
 
 
-            assertAll(
-                    () -> assertTrue(isElementDisplayed(newsTab)),
-                    () -> assertTrue(isElementDisplayed(stubImage))
-            );
+            assertTrue(isElementPresent(homePage.newsTab));
+            assertTrue(isElementPresent(homePage.stubImage));
         });
     }
 
-
-
-    private void clickWithWait(By locator) {
-        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
-        element.click();
-    }
-
-    private void hoverOn(By locator) {
-        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
-        actions.moveToElement(element).perform();
-    }
-
-    private boolean isElementDisplayed(By locator) {
+    private boolean isElementPresent(By locator) {
         try {
-            return driver.findElement(locator).isDisplayed();
-        } catch (NoSuchElementException | TimeoutException e) {
+
+            new WebDriverWait(driver, Duration.ofSeconds(10))
+                    .until(ExpectedConditions.visibilityOfElementLocated(locator));
+            return true;
+        } catch (TimeoutException e) {
             return false;
         }
     }
