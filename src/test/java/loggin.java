@@ -1,67 +1,101 @@
-
-import org.junit.Test;
-import org.junit.Before;
-import org.junit.After;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.core.IsNot.not;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
+import org.junit.jupiter.api.*;
+import org.openqa.selenium.*;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.Dimension;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Alert;
-import org.openqa.selenium.Keys;
-import java.util.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 
+import java.time.Duration;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.DisplayName.class)
 public class loggin {
+
     private WebDriver driver;
-    private Map<String, Object> vars;
-    JavascriptExecutor js;
-    @Before
+    private Actions actions;
+    private WebDriverWait wait;
+
+    // Локаторы
+    private final By emailField = By.id("field_email");
+    private final By passwordField = By.id("field_password");
+    private final By loginButton = By.cssSelector(".__wide:nth-child(1)");
+    private final By hoverElementOnCard = By.cssSelector(".card-wrapper__ylpz6:nth-child(3) .content__aj603");
+    private final By avatarIcon = By.cssSelector(".lcTc_avatar");
+    private final By feedItem = By.cssSelector(".feed-w:nth-child(4) > .feed");
+
+    @BeforeEach
     public void setUp() {
         driver = new FirefoxDriver();
-        js = (JavascriptExecutor) driver;
-        vars = new HashMap<String, Object>();
-    }
-    @After
-    public void tearDown() {
-        driver.quit();
-    }
-    @Test
-    public void testloggin() {
-        driver.get("https://ok.ru/");
+        actions = new Actions(driver);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         driver.manage().window().setSize(new Dimension(922, 894));
-        driver.findElement(By.id("field_email")).sendKeys("technopol38");
-        driver.findElement(By.id("field_password")).click();
-        driver.findElement(By.id("field_password")).sendKeys("technopolisPassword");
-        driver.findElement(By.cssSelector(".\\__wide:nth-child(1)")).click();
-        {
-            WebElement element = driver.findElement(By.cssSelector(".card-wrapper__ylpz6:nth-child(3) .content__aj603"));
-            Actions builder = new Actions(driver);
-            builder.moveToElement(element).perform();
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (driver != null) {
+            driver.quit();
         }
-        js.executeScript("window.scrollTo(0,0)");
-        {
-            WebElement element = driver.findElement(By.tagName("body"));
-            Actions builder = new Actions(driver);
-            builder.moveToElement(element, 0, 0).perform();
+    }
+
+    @Test
+    @DisplayName("Тест входа в аккаунт и взаимодействия с интерфейсом")
+    @Tag("login")
+    public void testLoginAndInteractions() {
+        assertTimeoutPreemptively(Duration.ofMinutes(2), () -> {
+            // Открытие страницы
+            driver.get("https://ok.ru/");
+
+            // Ввод логина и пароля
+            enterText(emailField, "technopol38");
+            enterText(passwordField, "technopolisPassword");
+
+            // Клик по кнопке входа
+            clickWithWait(loginButton);
+
+            // Наведение мыши на карточку
+            hoverOn(hoverElementOnCard);
+
+            // Скролл вверх
+            ((JavascriptExecutor) driver).executeScript("window.scrollTo(0,0)");
+
+            // Наведение на аватар
+            hoverOn(avatarIcon);
+
+            // Клик по элементу в ленте
+            clickWithWait(feedItem);
+
+            // Проверки
+            assertAll(
+                    () -> assertTrue(isElementDisplayed(emailField)),
+                    () -> assertTrue(isElementDisplayed(passwordField))
+            );
+        });
+    }
+
+    // Вспомогательные методы
+
+    private void enterText(By locator, String text) {
+        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        element.sendKeys(text);
+    }
+
+    private void clickWithWait(By locator) {
+        WebElement element = wait.until(ExpectedConditions.elementToBeClickable(locator));
+        element.click();
+    }
+
+    private void hoverOn(By locator) {
+        WebElement element = driver.findElement(locator);
+        actions.moveToElement(element).perform();
+    }
+
+    private boolean isElementDisplayed(By locator) {
+        try {
+            return driver.findElement(locator).isDisplayed();
+        } catch (NoSuchElementException | TimeoutException e) {
+            return false;
         }
-        {
-            WebElement element = driver.findElement(By.cssSelector(".lcTc_avatar"));
-            Actions builder = new Actions(driver);
-            builder.moveToElement(element).perform();
-        }
-        driver.findElement(By.cssSelector(".feed-w:nth-child(4) > .feed")).click();
-        driver.close();
     }
 }
